@@ -5,19 +5,9 @@ fn main() {
 }
 
 fn get_total(input: &str) -> i32 {
-    input.lines().map(into_number).sum()
-}
-
-fn into_number(line: &str) -> i32 {
-    let (sign, num) = line.split_at(1);
-
-    let amount: i32 = num.parse().expect("couldn't parse number from line");
-
-    match sign {
-        "+" => amount,
-        "-" => -amount,
-        _ => unreachable!()
-    }
+    input.lines()
+        .map(|l| l.parse::<i32>().expect("couldn't parse i32 from line"))
+        .sum()
 }
 
 #[cfg(test)]

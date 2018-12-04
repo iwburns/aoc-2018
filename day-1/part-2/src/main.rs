@@ -11,7 +11,7 @@ fn get_total(input: &str) -> i32 {
 
     let deltas = input
         .lines()
-        .map(into_number)
+        .map(|l| l.parse::<i32>().expect("couldn't parse number from line"))
         .cycle();
 
     let mut total = 0;
@@ -27,18 +27,6 @@ fn get_total(input: &str) -> i32 {
     }
 
     total
-}
-
-fn into_number(line: &str) -> i32 {
-    let (sign, num) = line.split_at(1);
-
-    let amount: i32 = num.parse().expect("couldn't parse number from line");
-
-    match sign {
-        "+" => amount,
-        "-" => -amount,
-        _ => unreachable!()
-    }
 }
 
 #[cfg(test)]
