@@ -16,19 +16,18 @@ fn get_checksum(input: &str) -> u32 {
 
 fn into_counts(line: &str) -> (u32, u32) {
     let char_counts = line.chars()
-        .fold(HashMap::new(), move |mut acc, curr| {
+        .fold(HashMap::new(), |mut acc, curr| {
             *acc.entry(curr).or_insert(0) += 1;
             acc
         });
 
-    let (twos, threes) = char_counts.iter()
-        .fold((0, 0), |(twos, threes), (_char, count)| {
-            match count {
-                2 => ((twos + 1).min(1), threes),
-                3 => (twos, (threes + 1).min(1)),
-                _ => (twos, threes),
-            }
-        });
+    let (twos, threes) = char_counts.values().fold((0, 0), |(twos, threes), count| {
+        match count {
+            2 => (1, threes),
+            3 => (twos, 1),
+            _ => (twos, threes),
+        }
+    });
 
     (twos, threes)
 }
