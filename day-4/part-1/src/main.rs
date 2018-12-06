@@ -121,7 +121,6 @@ fn find_guard_who_has_slept_the_most(minutes_spent_asleep_per_guard: &HashMap<Gu
 }
 
 fn get_minute_guard_was_asleep_most_often(minutes_spent_asleep_per_guard: &HashMap<GuardId, Vec<Minute>>, guard_id: GuardId) -> Minute {
-    // minute "01" or "43" -> number of times it was spent asleep
     let mut num_times_each_minute_was_spent_asleep: HashMap<Minute, u32> = HashMap::new();
 
     let all_minutes_guard_spent_asleep: &Vec<Minute> = minutes_spent_asleep_per_guard.get(&guard_id).expect("key must be present");
