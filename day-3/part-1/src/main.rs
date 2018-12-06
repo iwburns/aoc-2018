@@ -40,10 +40,10 @@ fn find_overlapping_sq_inches(input: &str) -> usize {
         claim_cloth_area(&claim, &mut cloth);
     }
 
-    cloth.values().filter(|ids| ids.len() > 1).count()
+    cloth.values().filter(|&val| *val > 1).count()
 }
 
-fn claim_cloth_area(claim: &Claim, cloth: &mut HashMap<(u32, u32), Vec<u32>>) {
+fn claim_cloth_area(claim: &Claim, cloth: &mut HashMap<(u32, u32), u32>) {
     let x_min = claim.x;
     let x_max = claim.x + claim.width;
     let y_min = claim.y;
@@ -51,8 +51,7 @@ fn claim_cloth_area(claim: &Claim, cloth: &mut HashMap<(u32, u32), Vec<u32>>) {
 
     for x in x_min..x_max {
         for y in y_min..y_max {
-            let mut ids = cloth.entry((x, y)).or_insert(Vec::new());
-            ids.push(claim.id);
+            *cloth.entry((x, y)).or_insert(0) += 1;
         }
     }
 }
