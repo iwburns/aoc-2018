@@ -5,7 +5,8 @@ fn main() {
 }
 
 fn get_total(input: &str) -> i32 {
-    input.lines()
+    input
+        .lines()
         .map(|l| l.parse::<i32>().expect("couldn't parse i32 from line"))
         .sum()
 }
