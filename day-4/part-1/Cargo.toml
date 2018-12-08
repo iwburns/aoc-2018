@@ -2,6 +2,7 @@
 name = "part-1"
 version = "0.1.0"
 authors = ["Ian <iwburns8@gmail.com>"]
+edition = "2018"
 
 [dependencies]
 chrono = "0.4"
