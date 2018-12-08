@@ -52,37 +52,31 @@ fn main() {
 }
 
 fn get_solution(input: &str) -> u32 {
-    let mut records = input.lines().map(Record::from).collect::<Vec<Record>>();
+    let records = get_records(input);
 
+    let minutes_asleep = get_each_minute_spent_asleep_per_guard(&records);
+
+    let (frequent_guard, frequent_minute) = minutes_asleep
+        .iter()
+        .map(|(&guard_id, minutes)| {
+            let (most_slept_minute, times_slept) = minutes
+                .iter()
+                .max_by_key(|(_minute, &times_slept)| times_slept)
+                .expect("somehow this guard hasn't slept");
+
+            (guard_id, minutes, most_slept_minute, times_slept)
+        })
+        .max_by_key(|(_guard_id, _minutes, _most_slept_minute, &times_slept)| times_slept)
+        .map(|(guard_id, _minutes, most_slept_minute, _times_slept)| (guard_id, most_slept_minute))
+        .expect("somehow no guards have slept.");
+
+    frequent_guard * frequent_minute
+}
+
+fn get_records(input: &str) -> Vec<Record> {
+    let mut records: Vec<Record> = input.lines().map(Record::from).collect();
     records.sort_by_key(|r| r.timestamp);
-
-    let minutes_spent_asleep = get_each_minute_spent_asleep_per_guard(&records);
-
-    let (guard_id, most_slept_minute, _times_slept) =
-        minutes_spent_asleep
-            .keys()
-            .fold((0, 0, 0), |(g_acc, m_acc, t_acc), guard_id| {
-                let minutes_slept_by_guard = minutes_spent_asleep.get(guard_id).expect("it exists");
-
-                let (minute, count) =
-                    minutes_slept_by_guard
-                        .keys()
-                        .fold((0, 0), |(min_acc, c_acc), minute| {
-                            let num = minutes_slept_by_guard.get(minute).expect("it exists");
-                            if *num > c_acc {
-                                return (*minute, *num);
-                            }
-                            (min_acc, c_acc)
-                        });
-
-                if count > t_acc {
-                    return (*guard_id, minute, count);
-                }
-
-                (g_acc, m_acc, t_acc)
-            });
-
-    guard_id * most_slept_minute
+    records
 }
 
 fn get_each_minute_spent_asleep_per_guard(
@@ -108,13 +102,13 @@ fn get_each_minute_spent_asleep_per_guard(
                 let minute_started = started_sleeping.time().minute();
                 let num_minutes_slept = record.timestamp.sub(started_sleeping).num_minutes();
 
-                let m = minutes_spent_asleep
+                let times_minute_slept: &mut HashMap<Minute, u32> = minutes_spent_asleep
                     .entry(guard_id)
                     .or_insert_with(HashMap::new);
 
                 for i in 0..num_minutes_slept {
                     let curr_minute = minute_started + (i as u32);
-                    *m.entry(curr_minute).or_insert(0) += 1;
+                    *times_minute_slept.entry(curr_minute).or_insert(0) += 1;
                 }
             }
         }
