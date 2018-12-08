@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 fn main() {
     let input = include_str!("./input.txt");
     let total = get_text(input);
@@ -15,19 +13,22 @@ fn get_text(input: &str) -> String {
             }
         }
     }
-    return String::from("match not found");
+
+    String::from("match not found")
 }
 
 fn process_lines(line_a: &str, line_b: &str) -> (u32, String) {
-    let (distance, common) = line_a.chars()
-        .zip(line_b.chars())
-        .fold((0, String::new()), |(dist, mut text), (a, b)| {
-            if a == b {
-                text.push(a);
-                return (dist, text);
-            }
-            return (dist + 1, text);
-        });
+    let (distance, common) =
+        line_a
+            .chars()
+            .zip(line_b.chars())
+            .fold((0, String::new()), |(dist, mut text), (a, b)| {
+                if a == b {
+                    text.push(a);
+                    return (dist, text);
+                }
+                (dist + 1, text)
+            });
 
     (distance, common)
 }
