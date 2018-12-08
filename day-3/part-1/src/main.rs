@@ -9,11 +9,15 @@ struct Claim {
     height: u32,
 }
 
-impl<'a> From<&'a str> for Claim {
-    fn from(string: &'a str) -> Self {
+impl From<&str> for Claim {
+    fn from(string: &str) -> Self {
         let parts: Vec<&str> = string.split(|c| c == '@' || c == ':').collect();
 
-        let id = parts[0].trim().trim_matches(|c| c == '#').parse().unwrap_or(0);
+        let id = parts[0]
+            .trim()
+            .trim_matches(|c| c == '#')
+            .parse()
+            .unwrap_or(0);
         let coords: Vec<&str> = parts[1].trim().split(',').collect();
         let size: Vec<&str> = parts[2].trim().split('x').collect();
 
